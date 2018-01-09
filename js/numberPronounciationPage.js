@@ -254,6 +254,13 @@ function Synthesize(NumberDrawnFromInput, base) {
     if (getLastDigit(NumberDrawnFromInput) == 0) {
         return base;
     } else {
+        return enere(getLastDigit(NumberDrawnFromInput)) + " og " + base;
+    }
+}
+function SynthesizeWithCorrectSpelling(NumberDrawnFromInput, base) {
+    if (getLastDigit(NumberDrawnFromInput) == 0) {
+        return base;
+    } else {
         return enere(getLastDigit(NumberDrawnFromInput)) + "og" + base;
     }
 }
