@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/onsenui-fonts.css">
+    <link rel="stylesheet" href="css/onsenui.min.css">
+    <link rel="stylesheet" href="css/onsen-css-components.min.css">
+    <link rel="stylesheet" href="css/numberPronounciation.css">
+
+    <script src="js/onsenui.min.js"></script>
+    <script src="js/angular_1.5.5/angular.min.js"></script>
+    <script src="js/angular-onsenui.min.js"></script>
+    <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+
+
+</head>
+
+<body>
+    <ons-page ng-controller="PageController">
+        <ons-toolbar>
+            <div class="center">
+                <ons-segment id="segment" tabbar-id="tabbar" style="width: 180px">
+                    <button>Page 1</button>
+                    <button>Page 2</button>
+                    <button>Page 3</button>
+                </ons-segment>
+            </div>
+        </ons-toolbar>
+
+        <ons-tabbar id="tabbar">
+            <ons-tab page="page1.html"></ons-tab>
+            <ons-tab page="page2.html" active></ons-tab>
+            <ons-tab page="page3.html"></ons-tab>
+        </ons-tabbar>
+
+    </ons-page>
+
+    <template id="page2.html">
+        <ons-page>
+            <h2>Page1</h2>
+            <ons-button ng-click="changeTab()">Change tab via tabbar</ons-button>
+            <ons-button ng-click="changeButton()">Change tab via segment</ons-button>
+            <ons-button ng-click="logIndexes()">Log current button index</ons-button>
+        </ons-page>
+    </template>
+    <template id="page3.html">
+        <ons-page>
+            <h2>Page2</h2>
+            <ons-button ng-click="logIndexes()">Log current button index</ons-button>
+        </ons-page>
+    </template>
+
+    <template id="page4.html">
+        <ons-page>
+            <h2>Page3</h2>
+            <ons-button ng-click="logIndexes()">Log current button index</ons-button>
+        </ons-page>
+    </template>
+
+</body>
+
+</html>
+<script>
+    ons.bootstrap()
+        .controller('PageController', function ($scope) {
+            $scope.changeTab = function () {
+                document.getElementById('tabbar').setActiveTab(1);
+            };
+            $scope.changeButton = function () {
+                document.getElementById('segment').setActiveButton(2);
+            };
+            $scope.logIndexes = function () {
+                console.log('active button index', document.getElementById('segment').getActiveButtonIndex());
+                console.log('active tab index', document.getElementById('tabbar').getActiveTabIndex());
+            };
+        });
+    document.addEventListener('postchange', function (event) {
+        console.log('postchange event', event);
+    });
+</script>

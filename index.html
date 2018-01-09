@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/onsenui-fonts.css">
+  <link rel="stylesheet" href="css/onsenui.min.css">
+  <link rel="stylesheet" href="css/onsen-css-components.min.css">
+  <link rel="stylesheet" href="css/numberPronounciation.css">
+
+  <script src="js/onsenui.min.js"></script>
+  <script src="js/angular_1.5.5/angular.min.js"></script>
+  <script src="js/angular-onsenui.min.js"></script>
+  <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+
+  <script>
+    //on pageload: load angular for ng-model Directive
+    ons.bootstrap();
+
+    document.addEventListener('init', function(event) {
+      var page = event.target;
+      if (page.matches('#numberPractice')) {
+         // page.querySelector('toolbar__center toolbar--material__center').innerHTML = 'My app';
+          
+      }
+    });
+  </script>
+
+</head>
+<body>
+  <ons-page id="numberPractice" ng-init="numRange = 100; swtichAuto = true">
+    <!-- ======================= Toolbar  ======================= -->
+    <ons-toolbar>
+        <!--<div class="left">
+          <i class="zmdi zmdi-menu"></i>
+        </div> -->
+        <div class="center">Number Practice</div>
+        <div class="right">
+          <!--<ons-toolbar-button>
+              <i class="zmdi zmdi-search"></i>
+          </ons-toolbar-button>
+          <ons-toolbar-button>
+              <i class="zmdi zmdi-favorite"></i>
+          </ons-toolbar-button>
+          <ons-toolbar-button>
+              <i class="zmdi zmdi-more-vert"></i>
+          </ons-toolbar-button> -->
+          <ons-toolbar-button>
+            <ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+    <!-- ======================= Toolbar  ======================= -->
+      <div class="content">
+        <div class="card card--material">
+          <div class="card__content card--material__content"> 
+            <h1>Number practice from 0 - {{numRange}} </h1>
+            <p>This page will provide pronounciation of random numbers in Danish. 
+              This is intended to remind and practice your pronounciation.</p>
+              
+            <ons-row style="text-align: center;">
+              <p class="center">Practice number</p>
+            </ons-row>
+            <ons-row>
+              <ons-row>
+                <div class="circle">
+                  <span id="numberToGuess"></span>
+                </div>
+              </ons-row>
+              <ons-row style="text-align: center; line-height: 0px;">
+                <ons-col style="text-align: right; line-height: 0px;">
+                  <button class="button" onclick="sayDisplayedWord()"><ons-icon icon="md-hearing"></ons-icon> Pronounce</button>
+                </ons-col>
+                <ons-col width="10px"></ons-col>
+                <ons-col style="text-align: left; line-height: 0px;">
+                  <button class="button" onclick="drawNewNumber()"><ons-icon icon="md-play"></ons-icon> Next</button>
+                </ons-col>
+              </ons-row>
+            </ons-row> 
+            <ons-row>
+
+          </div>
+        </div>
+        <div class="card card--material">
+          <div class="card__content card--material__content"> 
+              <p><B>Settings</B></p>
+            <ons-row>
+              <ons-col width="200px" style="text-align: left; line-height: 0px;">
+                <p>Automatic Pronounciation</p>
+              </ons-col>
+              <ons-col class="right">
+                <ons-switch ng-model="swtichAuto" id="autoSpeakSwitch" ></ons-switch>
+              </ons-col>
+            </ons-row> 
+            <ons-row>
+              <ons-col width="200px" style="text-align: left; line-height: 0px;">
+                <p>Number Range</p>
+              </ons-col>
+              <ons-col  class="right">
+                <ons-range id="numberSlider" style="width: auto;" value="100" min="0" max="1000" ng-model="numRange"></ons-range>
+              </ons-col>
+            </ons-row>    
+          </div>
+        </div>
+      </div>
+    </ons-page>
+    
+    <!-- Requirement for number practice page -->
+    <script src="js/numberPronounciationPage.js"></script>
+
+    
+</body>
+</html>
