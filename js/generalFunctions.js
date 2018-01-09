@@ -1,8 +1,8 @@
 //on pageload: load angular for ng-model Directive
 ons.bootstrap()
-    /*
     //This was used to control the toolbar under number practice
     .controller('PageController', function ($scope) {
+        /*
         $scope.changeTab = function () {
             document.getElementById('tabbar').setActiveTab(1);
         };
@@ -13,8 +13,9 @@ ons.bootstrap()
             console.log('active button index', document.getElementById('segment').getActiveButtonIndex());
             console.log('active tab index', document.getElementById('tabbar').getActiveTabIndex());
         };
+        */
     });
-    */
+    
 ; // <-- for bootstrap();
 
 // ============ start Event ============
