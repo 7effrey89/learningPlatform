@@ -16,43 +16,19 @@
   <link rel="stylesheet" href="css/onsenui.min.css">
   <link rel="stylesheet" href="css/onsen-css-components.min.css">
   <link rel="stylesheet" href="css/numberPronounciation.css">
+  <link rel="stylesheet" href="css/customCSS.css">
   <link rel="apple-touch-icon" sizes="57x57" href="icon/apple-icon-57x57.png" />
   <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-icon-72x72.png" />
   <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-icon-114x114.png" />
   <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-icon-144x144.png" />
   <link href="icon/192.png" rel="icon" sizes="192x192" />
   <link href="icon/128.png" rel="icon" sizes="128x128" />
-  <style>
-    .textLeft {
-      text-align: left;
-    }
 
-    .textRight {
-      text-align: right;
-    }
-
-    h1 {
-      margin: 0px;
-    }
-  </style>
   <script src="js/onsenui.min.js"></script>
   <script src="js/angular_1.5.5/angular.min.js"></script>
   <script src="js/angular-onsenui.min.js"></script>
   <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
-
-  <script>
-    //on pageload: load angular for ng-model Directive
-    //ons.bootstrap();
-
-    document.addEventListener('init', function (event) {
-      var page = event.target;
-      if (page.matches('#numberPractice')) {
-        // page.querySelector('toolbar__center toolbar--material__center').innerHTML = 'My app';
-
-      }
-    });
-  </script>
-
+  <script src="js/generalFunctions.js"></script>
 </head>
 
 <body>
@@ -139,14 +115,15 @@
 
           </div>
         </div>
+        <!-- Not implemented yet
         <div class="card card--material">
           <div class="card__content card--material__content">
-
             <ons-button modifier="light" onclick="myNavigator.pushPage('page2.html', { animation : 'slide' } )">
               Push Page
             </ons-button>
           </div>
         </div>
+      -->
       </div>
       <ons-dialog id="dialog-numberSettings">
         <div style="text-align: center; padding: 10px;">
@@ -199,30 +176,7 @@
 -->
 
   <script>
-    //methods for handling dialog boxes
-    var showDialog = function (id) {
-      document
-        .getElementById(id)
-        .show();
-    };
-    var hideDialog = function (id) {
-      document
-        .getElementById(id)
-        .hide();
-    };
-    ons.bootstrap()
-      .controller('PageController', function ($scope) {
-        $scope.changeTab = function () {
-          document.getElementById('tabbar').setActiveTab(1);
-        };
-        $scope.changeButton = function () {
-          document.getElementById('segment').setActiveButton(2);
-        };
-        $scope.logIndexes = function () {
-          console.log('active button index', document.getElementById('segment').getActiveButtonIndex());
-          console.log('active tab index', document.getElementById('tabbar').getActiveTabIndex());
-        };
-      });
+
 
   </script>
 </body>
