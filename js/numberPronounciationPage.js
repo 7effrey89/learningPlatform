@@ -2,12 +2,22 @@
 var wordDisplay = document.getElementById("numberToGuess");
 var autoSwitch = document.getElementById("autoSpeakSwitch");
 var rangeSlider = document.getElementById('numberSlider');
+var maxNumLbl = document.getElementById('maxNumLbl');
+var maxNumLbl_ordinaryMax = document.getElementById('maxNumLbl_ordinaryMax');
+
 // ============= End Controls ============= 
 
 // ============= Start Global Variables============= 
 var autoSpeakMode;
 var numberMaxRange;
 var currentTrainingMode;
+
+// ============= End Global Variables============= 
+
+// ============= Start Settings ============= 
+var maxNumberSuppByOrdinaryNum = 100;
+var maxNumberSuppByOrdinaryWarningTxt = "Max number reduced to: " + maxNumberSuppByOrdinaryNum + ". Higher numbers not supported.";
+var toastTimeout = 7500;
 
 var trainingMode = {
     NUMERIC: 1,
@@ -23,7 +33,7 @@ var trainingMode = {
 * var mySize = trainingMode.ORDINARY;
 * var myCode = trainingMode.properties[mySize].code; // myCode == "ord"
 */
-// ============= End Global Variables============= 
+// ============= End Settings ============= 
 
 
 // ============= Start On pageload ============= 
@@ -50,6 +60,13 @@ document.addEventListener("postshow", function(event) {
         rangeSlider.addEventListener('change', function(e) {
             //console.log('click', e);
             numberMaxRange = rangeSlider.value;
+
+            //this doesn't work that well because of wrong event listner
+            //Reduce the Max number if overseeding supported range, and give warning to user
+            if (currentTrainingMode==trainingMode.ORDINARY) {
+                //Reduce the Max number if overseeding supported range, and give warning to user
+                limitMaxNumberAndGiveWarningForOrdinaryNum();
+            }
         });
     }
 }, false);
@@ -79,7 +96,10 @@ function drawNewNumber() {
         if (currentTrainingMode==trainingMode.NUMERIC){
             pronounceWord(variable.toString()); 
         } else if (currentTrainingMode==trainingMode.ORDINARY) {
-            pronounceWord(ordinaryNumber(variable).toString());    
+            //Reduce the Max number if overseeding supported range, and give warning to user
+            limitMaxNumberAndGiveWarningForOrdinaryNum();
+
+            pronounceWord(ordinaryNumber(variable).toString());
         } else if (currentTrainingMode==trainingMode.YEAR) {
             alert("Mode not developed");  
         } else {
@@ -99,11 +119,6 @@ function pronounceWord(word) {
     }
 }
 
-function rangeSliderInput() {
-    
-    ons.notification.alert('Value is ' + rangeSlider.value);
-}
-
 //Settings to activate numeric training mode
 function activateNumTrainMode() {
     currentTrainingMode = trainingMode.NUMERIC;
@@ -111,12 +126,57 @@ function activateNumTrainMode() {
 //Settings to activate ordinary training mode
 function activateOrdTrainMode() {
     currentTrainingMode = trainingMode.ORDINARY;
+
+    //Reduce the Max number if overseeding supported range, and give warning to user
+    limitMaxNumberAndGiveWarningForOrdinaryNum();
+    
 }
 //Settings to activate year training mode
 function activateYeaTrainMode() {
     currentTrainingMode = trainingMode.YEAR;
 }
 
+//Reduce the Max number if overseeding supported range, and give warning to user
+function limitMaxNumberAndGiveWarningForOrdinaryNum() {
+
+    //if number range is higher than the supported for ordinary number show toast warning
+    if (numberMaxRange> maxNumberSuppByOrdinaryNum) {
+
+        //Set number limit to maxNumberSuppByOrdinaryNum (100)
+        rangeSlider.value = maxNumberSuppByOrdinaryNum;
+        
+        showDynamicMaxNumDisplay(false);
+        //TODO bug: after rangeSlider has been set, the ng-model doesn't update
+        //Code
+        /*app.controller('PageController', function($scope) {
+            $scope.numRange = maxNumberSuppByOrdinaryNum;
+            $scope.$apply;
+        });*/
+        
+        //toast
+        ons.notification.toast({message: maxNumberSuppByOrdinaryWarningTxt, timeout: toastTimeout})
+    } else {
+        showDynamicMaxNumDisplay(true);
+    }
+}
+//workaround for showing the correct value the slider when setting it manually through code
+function showDynamicMaxNumDisplay(booleanValue) {
+    if (booleanValue == false) {
+        //show the static max number label
+        maxNumLbl_ordinaryMax.style.display = "block";
+        //set the static max number label - cannot be changed dynamically - lack of angular skills
+        maxNumLbl_ordinaryMax.innerHTML = maxNumberSuppByOrdinaryNum;
+
+        //Hide the dynamic max number label
+        maxNumLbl.style.display = "none";
+    } else {
+        //show the static max number label
+        maxNumLbl_ordinaryMax.style.display = "none";
+        //Hide the dynamic max number label
+        maxNumLbl.style.display = "block";
+    }
+        
+}
 // ============= End Functions ============= 
 
 // ============= Copy of numberTranslation ==============
