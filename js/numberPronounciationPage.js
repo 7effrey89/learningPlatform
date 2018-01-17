@@ -2,8 +2,15 @@
 var wordDisplay = document.getElementById("numberToGuess");
 var autoSwitch = document.getElementById("autoSpeakSwitch");
 var rangeSlider = document.getElementById('numberSlider');
+
+//Max Number Range for RnD generator
 var maxNumLbl = document.getElementById('maxNumLbl');
 var maxNumLbl_ordinaryMax = document.getElementById('maxNumLbl_ordinaryMax');
+
+//Year settings
+var hundredChk = document.getElementById("hundred");
+var thousandChk = document.getElementById('thousand');
+var twoThousandChk = document.getElementById('twoThousand');
 
 // ============= End Controls ============= 
 
@@ -11,10 +18,16 @@ var maxNumLbl_ordinaryMax = document.getElementById('maxNumLbl_ordinaryMax');
 var autoSpeakMode;
 var numberMaxRange;
 var currentTrainingMode;
+var trainingMode_minNumberRng;
+var trainingMode_maxNumberRng;
+var yearHundredMode;
+var yearThousandMode;
+var yearTwothousandMode;
 
 // ============= End Global Variables============= 
 
 // ============= Start Settings ============= 
+var numberMinRange = 1;
 var maxNumberSuppByOrdinaryNum = 100;
 var maxNumberSuppByOrdinaryWarningTxt = "Max number reduced to: " + maxNumberSuppByOrdinaryNum + ". Higher numbers not supported.";
 var toastTimeout = 7500;
@@ -42,7 +55,10 @@ var trainingMode = {
 currentTrainingMode = trainingMode.NUMERIC;
 numberMaxRange = rangeSlider.value; //Load the default max range number
 autoSpeakMode = true;   //Load the default auto prononcition mode
-wordDisplay.innerHTML = randomNumberGenerator();    //load random number on pageload
+wordDisplay.innerHTML = randomNumberGenerator(numberMinRange, numberMaxRange);    //load random number on pageload
+yearTwothousandMode = twoThousandChk.checked; //Load the state of the century range picker 
+yearThousandMode = thousandChk.checked; //Load the state of the century range picker
+yearHundredMode = hundredChk.checked;//Load the state of the century range picker
 
 //Eventlisteners for the pronounciation settings-dialog-box (dialog-numberSettings),
 //starting after dialog-box shown (postshow)
@@ -59,15 +75,38 @@ document.addEventListener("postshow", function(event) {
         //add eventlistner to the switch for auto pronounciation
         rangeSlider.addEventListener('change', function(e) {
             //console.log('click', e);
+            
             numberMaxRange = rangeSlider.value;
 
-            //this doesn't work that well because of wrong event listner
             //Reduce the Max number if overseeding supported range, and give warning to user
             if (currentTrainingMode==trainingMode.ORDINARY) {
-                //Reduce the Max number if overseeding supported range, and give warning to user
                 limitMaxNumberAndGiveWarningForOrdinaryNum();
             }
         });
+
+        //add eventlistner to checkbox for year settings
+        hundredChk.addEventListener('change', function(e) {
+            //console.log('click', e);
+            yearHundredMode = hundredChk.checked;
+        });
+        //add eventlistner to checkbox for year settings
+        thousandChk.addEventListener('change', function(e) {
+            //console.log('click', e);
+            yearThousandMode = thousandChk.checked;
+        });
+        //add eventlistner to checkbox for year settings
+        twoThousandChk.addEventListener('change', function(e) {
+            //console.log('click', e);
+            yearTwothousandMode = twoThousandChk.checked;
+        });
+
+        //Only enable century range picker when on Year mode
+        if (currentTrainingMode==trainingMode.YEAR) {
+            enableCenturyRangePicker(true);
+            randomNumberForCentury();
+        } else {
+            enableCenturyRangePicker(false);
+        }
     }
 }, false);
 
@@ -85,8 +124,14 @@ function sayDisplayedWord() {
 
 function drawNewNumber() { 
     //generate random number
-    variable = randomNumberGenerator();
-    
+    if (currentTrainingMode==trainingMode.YEAR){
+        //generate random number within the selected ranges of centruries
+        variable = randomNumberForCentury();
+    } else {
+        //generate random number
+        variable = randomNumberGenerator(numberMinRange, numberMaxRange);
+    }
+
     //display the number 
     wordDisplay.innerHTML = variable;
 
@@ -101,7 +146,7 @@ function drawNewNumber() {
 
             pronounceWord(ordinaryNumber(variable).toString());
         } else if (currentTrainingMode==trainingMode.YEAR) {
-            alert("Mode not developed");  
+            pronounceWord(variable.toString()); 
         } else {
             alert("No mode was set");
         }
@@ -109,23 +154,64 @@ function drawNewNumber() {
     
 }
 
-function randomNumberGenerator() {
-    return Math.floor((Math.random() * numberMaxRange) + 1)
+function randomNumberGenerator(minValue, maxValue) {
+    return Math.floor(Math.random() * (maxValue - minValue + 1) ) + minValue;
+}
+function randomNumberForCentury() {
+    var rndNumRng1; var rndNumRng2; var rndNumRng3;
+    if (yearHundredMode == true) {
+        rndNumRng1 = randomNumberGenerator(1, 1000);
+    }
+    if (yearThousandMode == true) {
+        rndNumRng2 = randomNumberGenerator(1001, 1899);
+    }
+    if (yearTwothousandMode == true) {
+        rndNumRng3 = randomNumberGenerator(1900, 2025);
+    }
+    //Array that of numbers that we will select a random number from
+    var rndNumberCandidates = [];
+
+    //Add all random generated numbers from the different century ranges that is not null (that has been selected)
+    var randomNumbers = [rndNumRng1,rndNumRng2,rndNumRng3];
+    var arrayLength = randomNumbers.length;
+    for (var i = 0; i < arrayLength; i++) {
+        if (randomNumbers[i] != null) {
+            rndNumberCandidates.push(randomNumbers[i]);
+        }
+    }
+    //return a random number of the random number
+    return theRandomNumber = rndNumberCandidates[Math.floor(Math.random()*rndNumberCandidates.length)];
 }
 
 function pronounceWord(word) {
     if(responsiveVoice.voiceSupport()) {
-    return responsiveVoice.speak(word, "Danish Female");
+        return responsiveVoice.speak(word, "Danish Female");
     }
+}
+
+//toggle mode for century picker
+function enableCenturyRangePicker(boolean) {
+    hundredChk.disabled = !boolean;
+    thousandChk.disabled = !boolean;
+    twoThousandChk.disabled = !boolean;
 }
 
 //Settings to activate numeric training mode
 function activateNumTrainMode() {
     currentTrainingMode = trainingMode.NUMERIC;
+
+    //redefine max range for number
+    numberMaxRange = rangeSlider.value;
+    numberMinRange = 1;
+
 }
 //Settings to activate ordinary training mode
 function activateOrdTrainMode() {
     currentTrainingMode = trainingMode.ORDINARY;
+
+    //redefine max range for number
+    numberMaxRange = rangeSlider.value;
+    numberMinRange = 1;
 
     //Reduce the Max number if overseeding supported range, and give warning to user
     limitMaxNumberAndGiveWarningForOrdinaryNum();
@@ -134,6 +220,9 @@ function activateOrdTrainMode() {
 //Settings to activate year training mode
 function activateYeaTrainMode() {
     currentTrainingMode = trainingMode.YEAR;
+
+    //redefine max range for number
+    //limits are set
 }
 
 //Reduce the Max number if overseeding supported range, and give warning to user
@@ -146,7 +235,8 @@ function limitMaxNumberAndGiveWarningForOrdinaryNum() {
         rangeSlider.value = maxNumberSuppByOrdinaryNum;
         
         showDynamicMaxNumDisplay(false);
-        //TODO bug: after rangeSlider has been set, the ng-model doesn't update
+        //TODO bug: after rangeSlider has been set, the ng-model doesn't update.
+        //workaround using: showDynamicMaxNumDisplay(false); 
         //Code
         /*app.controller('PageController', function($scope) {
             $scope.numRange = maxNumberSuppByOrdinaryNum;

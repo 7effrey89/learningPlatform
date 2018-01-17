@@ -147,6 +147,21 @@
           <ons-row>
             <ons-range id="numberSlider" style="width: 100%;" value="100" min="0" max="1000" ng-model="numRange"></ons-range>
           </ons-row>
+          <ons-row>
+            <p>Century up to</p>
+          </ons-row>
+          <ons-row>
+            <ons-col>
+              <ons-checkbox input-id="hundred"></ons-checkbox>10<sup>th</sup>
+            </ons-col>
+            <ons-col> 
+              <ons-checkbox input-id="thousand"></ons-checkbox> 18<sup>th</sup>
+            </ons-col>  
+            <ons-col>
+              <ons-checkbox input-id="twoThousand" checked></ons-checkbox> 21<sup>st</sup>
+            </ons-col>  
+          </ons-row>
+          
           <p>
             <ons-button onclick="hideDialog('dialog-numberSettings')">Close</ons-button>
           </p>
