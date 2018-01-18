@@ -7,3 +7,8 @@
     border: 2px solid #666;
     margin-bottom: 20px;
 }
+.numberSpelledOut {
+    text-align: center;
+    width: 150px;
+    text-transform: capitalize;
+}
