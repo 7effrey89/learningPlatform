@@ -29,7 +29,7 @@ var yearTwothousandMode;
 
 // ============= Start Settings ============= 
 var numberMinRange = 1;
-var maxNumberSuppByOrdinaryNum = 100;
+var maxNumberSuppByOrdinaryNum = 9999;
 var maxNumberSuppByOrdinaryWarningTxt = "Max number reduced to: " + maxNumberSuppByOrdinaryNum + ". Higher numbers not supported.";
 var toastTimeout = 7500;
 
@@ -150,7 +150,7 @@ function drawNewNumber() {
             //Reduce the Max number if overseeding supported range, and give warning to user
             limitMaxNumberAndGiveWarningForOrdinaryNum();
 
-            pronounceWord(ordinaryNumber(variable).toString());
+            pronounceWord(ordinaryNumberSpeller(variable).toString());
         } else if (currentTrainingMode==trainingMode.YEAR) {
             pronounceWord(variable.toString()); 
         } else {
@@ -169,7 +169,7 @@ function displayNumberSpelling(number) {
         }
         case (currentTrainingMode==trainingMode.ORDINARY):
         {
-            return ordinaryNumber(variable); //needs to be an universal method
+            return ordinaryNumberSpeller(variable); //needs to be an universal method
         }
         case (currentTrainingMode==trainingMode.YEAR):
         {
@@ -438,6 +438,7 @@ function getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput) {
         return centuryNr;
     }
 }
+
 //Spelling algorithm for 1 to 99
 function spell1To99(centuryNr, NumberDrawnFromInput) {
         yearEndDigits = parseInt(getLastDigits(NumberDrawnFromInput,2));
@@ -459,6 +460,7 @@ function spell1To99(centuryNr, NumberDrawnFromInput) {
                 return centuryNr + enere(getLastDigits(yearEndDigits,1)) + "og" + tiereNormal(getFirstDigit(yearEndDigits));
         }
 }
+
 //Function to return number to spelling
 function normalNumberSpeller(NumberDrawnFromInput) {
     switch (true) {
@@ -484,7 +486,48 @@ function normalNumberSpeller(NumberDrawnFromInput) {
             return "number unsupported";
     }
 }
-
+//Function to return number to spelling
+function ordinaryNumberSpeller(NumberDrawnFromInput) {
+    switch (true) {
+        case (between(NumberDrawnFromInput, 1, 100) == true):
+            return ordinaryNumber(NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 100, 199) == true):
+            var frontNummer = "et " + hunderedeNormal(2);
+            var lastDigits = ordinaryNumber(getLastDigits(NumberDrawnFromInput,2));
+            return frontNummer + " " + lastDigits;
+        case (between(NumberDrawnFromInput, 200, 999) == true):
+            var frontNummer = enere(getFirstDigit(NumberDrawnFromInput)) + hunderedeNormal(2);
+            var lastDigits = ordinaryNumber(getLastDigits(NumberDrawnFromInput,2));
+            return frontNummer + " " + lastDigits;
+        case (NumberDrawnFromInput == 1000):
+        case (NumberDrawnFromInput == 2000):
+        case (NumberDrawnFromInput == 3000):
+        case (NumberDrawnFromInput == 4000):
+        case (NumberDrawnFromInput == 5000):
+        case (NumberDrawnFromInput == 6000):
+        case (NumberDrawnFromInput == 7000):
+        case (NumberDrawnFromInput == 8000):
+        case (NumberDrawnFromInput == 9000):
+            var frontNummer = enere(getFirstDigit(NumberDrawnFromInput)) + " " + hunderedeOrdinary(3);
+            return frontNummer;
+        case (between(NumberDrawnFromInput, 1001, 9999) == true):
+            var frontNummer
+            if (getFirstDigit(NumberDrawnFromInput) == 1) {
+                frontNummer = "et" + hunderedeNormal(3);
+            } else {
+                frontNummer =  enere(getFirstDigit(NumberDrawnFromInput)) + hunderedeNormal(3);
+            }
+            var midleNummer = String(NumberDrawnFromInput).charAt(2);
+            var hundredeDigit = "";
+            if (midleNummer != "0") {
+                hundredeDigit = hunderedeNormal(midleNummer)
+            }
+            var lastDigits = ordinaryNumber(getLastDigits(NumberDrawnFromInput,2));
+            return frontNummer + " og " + hundredeDigit + lastDigits;      
+        default:
+            return "number unsupported";
+    }
+}
 function ordinaryNumber(NumberDrawnFromInput) {
     switch (true) {
         case (between(NumberDrawnFromInput, 1, 19) == true):
@@ -535,6 +578,8 @@ function ordinaryNumber(NumberDrawnFromInput) {
             return Synthesize(NumberDrawnFromInput, base)
         case (NumberDrawnFromInput == 100):
             return hunderedeOrdinary(2); //return 100
+        case (NumberDrawnFromInput == 0):
+            return ""; 
         default:
             return "ikke understøttet";
     }
