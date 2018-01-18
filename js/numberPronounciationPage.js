@@ -2,6 +2,7 @@
 var wordDisplay = document.getElementById("numberToGuess");
 var autoSwitch = document.getElementById("autoSpeakSwitch");
 var rangeSlider = document.getElementById('numberSlider');
+var numberTxtDislay = document.getElementById('numberSpelling');
 
 //Max Number Range for RnD generator
 var maxNumLbl = document.getElementById('maxNumLbl');
@@ -55,7 +56,10 @@ var trainingMode = {
 currentTrainingMode = trainingMode.NUMERIC;
 numberMaxRange = rangeSlider.value; //Load the default max range number
 autoSpeakMode = true;   //Load the default auto prononcition mode
-wordDisplay.innerHTML = randomNumberGenerator(numberMinRange, numberMaxRange);    //load random number on pageload
+variable = randomNumberGenerator(numberMinRange, numberMaxRange);    //load random number on pageload
+wordDisplay.innerHTML = variable
+numberTxtDislay.innerHTML = displayNumberSpelling(variable); //load spelling to random number on pageload
+
 yearTwothousandMode = twoThousandChk.checked; //Load the state of the century range picker 
 yearThousandMode = thousandChk.checked; //Load the state of the century range picker
 yearHundredMode = hundredChk.checked;//Load the state of the century range picker
@@ -134,6 +138,7 @@ function drawNewNumber() {
 
     //display the number 
     wordDisplay.innerHTML = variable;
+    numberTxtDislay.innerHTML = displayNumberSpelling(variable); 
 
     //speak it out loud if setting is true for speak
     if (autoSpeakMode==true) {
@@ -152,6 +157,24 @@ function drawNewNumber() {
         }
     }
     
+}
+
+function displayNumberSpelling(number) {
+    switch(true) {
+        case (currentTrainingMode==trainingMode.NUMERIC):
+        {
+            return normalNumberSpeller(variable); //needs to be an universal method 
+            //return normalNumber(variable); //needs to be an universal method
+        }
+        case (currentTrainingMode==trainingMode.ORDINARY):
+        {
+            return ordinaryNumber(variable); //needs to be an universal method
+        }
+        case (currentTrainingMode==trainingMode.YEAR):
+        {
+            return normalNumberSpeller(variable); //needs to be an universal method
+        }
+   }
 }
 
 function randomNumberGenerator(minValue, maxValue) {
@@ -298,7 +321,33 @@ function enere(number) {
             return null;
     }
 }
-function tiere(number) {
+function tiTilTyveNormal(NumberDrawnFromInput) {
+    switch (true) {
+        case (NumberDrawnFromInput == 10):
+            return "ti";
+        case (NumberDrawnFromInput == 11):
+            return "elve";
+        case (NumberDrawnFromInput == 12):
+            return "tolv";
+        case (NumberDrawnFromInput == 13):
+            return "tretten";
+        case (NumberDrawnFromInput == 14):
+            return "fjorten";
+        case (NumberDrawnFromInput == 15):
+            return "femten";
+        case (NumberDrawnFromInput == 16):
+            return "seksten";
+        case (NumberDrawnFromInput == 17):
+            return "sytten";
+        case (NumberDrawnFromInput == 18):
+            return "atten";
+        case (NumberDrawnFromInput == 19):
+            return "nitten";
+        default:
+            return null;
+    }
+}
+function tiereOrdinary(number) {
     switch (true) {
         case (number == 2):
             return "tyvende";
@@ -320,35 +369,119 @@ function tiere(number) {
             return null;
     }
 }
-function hunderede(digits) {
+function tiereNormal(number) {
+    switch (true) {
+        case (number == 2):
+            return "tyve";
+        case (number == 3):
+            return "tredive";
+        case (number == 4):
+            return "fyrre";
+        case (number == 5):
+            return "halvtreds";
+        case (number == 6):
+            return "tres";
+        case (number == 7):
+            return "halvfjerds";
+        case (number == 8):
+            return "firs";
+        case (number == 9):
+            return "halvfems";
+        default:
+            return null;
+    }
+}
+function hunderedeOrdinary(digits) {
     switch (true) {
         case (digits == 2):
             return "hundrede";
         case (digits == 3):
             return "tusinde";
-        case (digits == 4):
-            return "millioner";
         default:
             return null;
     }
 }
-
-function getLastDigit(integer) {
-    return integer.toString().slice(-1);
+function hunderedeNormal(digits) {
+    switch (true) {
+        case (digits == 2):
+            return "hundrede";
+        case (digits == 3):
+            return "tusind";
+        default:
+            return null;
+    }
 }
-function getFirstDigit(integer) {
-    return Number(String(integer).charAt(0));
+function getLastDigits(variable, digits) {
+    return variable.toString().slice(-digits);
+}
+function getFirstDigits(variable,digits) {
+    return Number(String(variable).substring(0,digits));
+}
+function getFirstDigit(variable) {
+    return Number(String(variable).charAt(0));
 }
 function getNumberOfDigits(integer) {
     return Number(integer.toString().length);
 }
-function ordinaryNumber(NumberDrawnFromInput) {
 
+function getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput) {
+    if (getLastDigits(NumberDrawnFromInput,2) != "00") {
+        //If no century is given then do not print OG
+        if (centuryNr != "") {
+            centuryNr = centuryNr + " og ";
+        }
+        //Spelling algorithm for 1 to 99
+        return spell1To99(centuryNr, NumberDrawnFromInput);
+    }
+}
+//Spelling algorithm for 1 to 99
+function spell1To99(centuryNr, NumberDrawnFromInput) {
+        yearEndDigits = parseInt(getLastDigits(NumberDrawnFromInput,2));
+        switch (true) {
+            case (yearEndDigits < 10):
+                return centuryNr + enere(yearEndDigits);
+            case (between(yearEndDigits, 10, 19)):
+                return centuryNr + tiTilTyveNormal(yearEndDigits);
+            case (yearEndDigits == 20):
+            case (yearEndDigits == 30):
+            case (yearEndDigits == 40):
+            case (yearEndDigits == 50):
+            case (yearEndDigits == 60):
+            case (yearEndDigits == 70):
+            case (yearEndDigits == 80):
+            case (yearEndDigits == 90):
+                return centuryNr + tiereNormal(getFirstDigit(yearEndDigits));
+            default: //11-21
+                return centuryNr + enere(getLastDigits(yearEndDigits,1)) + "og" + tiereNormal(getFirstDigit(yearEndDigits));
+        }
+}
+//Function to return number to spelling
+function normalNumberSpeller(NumberDrawnFromInput) {
+    switch (true) {
+        case (between(NumberDrawnFromInput, 1, 99) == true):
+            var centuryNr = "";
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 100, 199) == true):
+            var centuryNr = "et " + hunderedeNormal(2);
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 200, 999) == true):
+            var centuryNr = enere(getFirstDigit(NumberDrawnFromInput)) + hunderedeNormal(2);
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 1100, 1999) == true):
+            var centuryNr = tiTilTyveNormal(parseInt(getFirstDigits(NumberDrawnFromInput, 2))) + "hundrede";
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 2000, 9991) == true):
+            var centuryNr = enere(getFirstDigit(NumberDrawnFromInput)) + hunderedeNormal(3);
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        default:
+            return "number unsupported";
+    }
+}
+
+function ordinaryNumber(NumberDrawnFromInput) {
     switch (true) {
         case (between(NumberDrawnFromInput, 1, 19) == true):
             switch (true) {
-                case (NumberDrawnFromInput == 1):
-                    return "første";
                 case (NumberDrawnFromInput == 1):
                     return "første";
                 case (NumberDrawnFromInput == 2):
@@ -391,26 +524,27 @@ function ordinaryNumber(NumberDrawnFromInput) {
                     return null;
             }
         case (between(NumberDrawnFromInput, 20, 99) == true):
-            base = tiere(getFirstDigit(NumberDrawnFromInput));
+            base = tiereOrdinary(getFirstDigit(NumberDrawnFromInput, 1));
             return Synthesize(NumberDrawnFromInput, base)
         case (NumberDrawnFromInput == 100):
-            return "hundrede";
+            return hunderedeOrdinary(2); //return 100
         default:
-            return null;
+            return "ikke understøttet";
     }
 }
-
+//spells the number for ordinary number, and pronounce it more clearly through voice api
 function Synthesize(NumberDrawnFromInput, base) {
-    if (getLastDigit(NumberDrawnFromInput) == 0) {
+    if (getLastDigits(NumberDrawnFromInput, 1) == 0) {
         return base;
     } else {
-        return enere(getLastDigit(NumberDrawnFromInput)) + " og " + base;
+        return enere(getLastDigits(NumberDrawnFromInput, 1)) + " og " + base;
     }
 }
+//spells the number for ordinary number
 function SynthesizeWithCorrectSpelling(NumberDrawnFromInput, base) {
-    if (getLastDigit(NumberDrawnFromInput) == 0) {
+    if (getLastDigits(NumberDrawnFromInput, 1) == 0) {
         return base;
     } else {
-        return enere(getLastDigit(NumberDrawnFromInput)) + "og" + base;
+        return enere(getLastDigits(NumberDrawnFromInput, 1)) + "og" + base;
     }
 }
