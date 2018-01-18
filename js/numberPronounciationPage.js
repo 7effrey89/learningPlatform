@@ -119,12 +119,24 @@ document.addEventListener("postshow", function(event) {
 
 
 // ============= Start Functions ============= 
+function pronounceWordWithSpeakMode(variable) {
+    if (currentTrainingMode==trainingMode.NUMERIC){
+        return pronounceWord(variable.toString()); 
+    } else if (currentTrainingMode==trainingMode.ORDINARY) {
+        //Reduce the Max number if overseeding supported range, and give warning to user
+        limitMaxNumberAndGiveWarningForOrdinaryNum();
 
+        return pronounceWord(ordinaryNumberSpeller(variable).toString());
+    } else if (currentTrainingMode==trainingMode.YEAR) {
+        return pronounceWord(variable.toString()); 
+    } else {
+        alert("No mode was set");
+    }
+}
 function sayDisplayedWord() {
     variable = wordDisplay.innerText;
-    
-    //speak it out loud
-    pronounceWord(variable.toString());
+    pronounceWordWithSpeakMode(variable);
+    //pronounceWord(variable.toString()); 
 }
 
 function drawNewNumber() { 
@@ -143,19 +155,7 @@ function drawNewNumber() {
 
     //speak it out loud if setting is true for speak
     if (autoSpeakMode==true) {
-        //determines which pronounciation mode to use depending on settings
-        if (currentTrainingMode==trainingMode.NUMERIC){
-            pronounceWord(variable.toString()); 
-        } else if (currentTrainingMode==trainingMode.ORDINARY) {
-            //Reduce the Max number if overseeding supported range, and give warning to user
-            limitMaxNumberAndGiveWarningForOrdinaryNum();
-
-            pronounceWord(ordinaryNumberSpeller(variable).toString());
-        } else if (currentTrainingMode==trainingMode.YEAR) {
-            pronounceWord(variable.toString()); 
-        } else {
-            alert("No mode was set");
-        }
+        pronounceWordWithSpeakMode(variable);
     }
     
 }
