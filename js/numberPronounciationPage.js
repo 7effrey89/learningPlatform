@@ -138,7 +138,6 @@ function drawNewNumber() {
     }
     
     //display the number 
-    variable = 1800;
     wordDisplay.innerHTML = variable;
     numberTxtDislay.innerHTML = displayNumberSpelling(variable); 
 
