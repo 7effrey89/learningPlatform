@@ -57,6 +57,7 @@ currentTrainingMode = trainingMode.NUMERIC;
 numberMaxRange = rangeSlider.value; //Load the default max range number
 autoSpeakMode = true;   //Load the default auto prononcition mode
 variable = randomNumberGenerator(numberMinRange, numberMaxRange);    //load random number on pageload
+
 wordDisplay.innerHTML = variable
 numberTxtDislay.innerHTML = displayNumberSpelling(variable); //load spelling to random number on pageload
 
@@ -135,8 +136,9 @@ function drawNewNumber() {
         //generate random number
         variable = randomNumberGenerator(numberMinRange, numberMaxRange);
     }
-
+    
     //display the number 
+    variable = 1800;
     wordDisplay.innerHTML = variable;
     numberTxtDislay.innerHTML = displayNumberSpelling(variable); 
 
@@ -430,8 +432,11 @@ function getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput) {
         if (centuryNr != "") {
             centuryNr = centuryNr + " og ";
         }
-        //Spelling algorithm for 1 to 99
+        //century (e.g 18th) + Spelling algorithm for 1 to 99
         return spell1To99(centuryNr, NumberDrawnFromInput);
+    } else {
+        //return century if no just 1800
+        return centuryNr;
     }
 }
 //Spelling algorithm for 1 to 99
