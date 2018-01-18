@@ -467,6 +467,9 @@ function normalNumberSpeller(NumberDrawnFromInput) {
         case (between(NumberDrawnFromInput, 200, 999) == true):
             var centuryNr = enere(getFirstDigit(NumberDrawnFromInput)) + hunderedeNormal(2);
             return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
+        case (between(NumberDrawnFromInput, 1000, 1099) == true):
+            var centuryNr = "et" + hunderedeNormal(3);
+            return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
         case (between(NumberDrawnFromInput, 1100, 1999) == true):
             var centuryNr = tiTilTyveNormal(parseInt(getFirstDigits(NumberDrawnFromInput, 2))) + "hundrede";
             return getLastTwoDigitsOfYearToSpelling(centuryNr, NumberDrawnFromInput);
